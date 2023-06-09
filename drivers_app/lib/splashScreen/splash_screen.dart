@@ -27,16 +27,22 @@ class _MySplashScreenState extends State<MySplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.black,
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset("assets/images/logo1.png")
-          ],
-        )
-      )
+    return Material(
+      child: Container(
+          color: Colors.black,
+          child: Center(
+              child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset("assets/images/logo1.png"),
+              const SizedBox(height: 20),
+              const Text('Uber & inDriver Clone App',
+                  style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white))
+            ],
+          ))),
     );
   }
 }
