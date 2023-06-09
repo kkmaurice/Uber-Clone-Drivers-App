@@ -1,3 +1,4 @@
+import 'package:drivers_app/authentication/car_info_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
@@ -23,6 +24,7 @@ class _SignupScreenState extends State<SignupScreen> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(
                 height: 10,
@@ -105,7 +107,10 @@ class _SignupScreenState extends State<SignupScreen> {
                 height: 20,
               ),
               ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const CarInfoScreen()));
+                  },
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.lightGreenAccent),
                   child: const Text(
