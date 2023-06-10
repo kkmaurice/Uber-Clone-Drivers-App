@@ -1,7 +1,6 @@
-import 'package:drivers_app/authentication/car_info_screen.dart';
+import 'package:drivers_app/widgets/progress_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -15,6 +14,36 @@ class _SignupScreenState extends State<SignupScreen> {
   TextEditingController emailTextEditingController = TextEditingController();
   TextEditingController phoneTextEditingController = TextEditingController();
   TextEditingController passwordTextEditingController = TextEditingController();
+
+  validateForm() {
+    if (nameTextEditingController.text.length < 3) {
+      Fluttertoast.showToast(
+          msg: 'Name must be at least 3 characters long',
+          backgroundColor: Colors.white,
+          textColor: Colors.black);
+    } else if (!emailTextEditingController.text.contains('@')) {
+      Fluttertoast.showToast(
+          msg: 'Email address is not valid',
+          backgroundColor: Colors.white,
+          textColor: Colors.black);
+    } else if (phoneTextEditingController.text.isEmpty) {
+      Fluttertoast.showToast(
+          msg: 'Phone number is mandatory',
+          backgroundColor: Colors.white,
+          textColor: Colors.black);
+    } else if (passwordTextEditingController.text.length < 6) {
+      Fluttertoast.showToast(
+          msg: 'Password must be at least 6 characters long',
+          backgroundColor: Colors.white,
+          textColor: Colors.black);
+    } else {
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) =>
+              ProgressDialog(message: 'Registering, Please wait...'));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,14 +137,13 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
               ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const CarInfoScreen()));
+                    validateForm();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.lightGreenAccent,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
-                    ), 
+                    ),
                   ),
                   child: const Text(
                     'Create Account',
