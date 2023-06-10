@@ -92,35 +92,39 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
                 const SizedBox(
                   height: 20,
                 ),
-                DropdownButton(
-                  dropdownColor: Colors.black54,
-                  iconEnabledColor: Colors.grey,
-                  hint: const Text('Select Car Type'),
-                  items: carTypeList.map((String dropDownStringItem) {
-                    return DropdownMenuItem(
-                        value: dropDownStringItem,
-                        child: Text(
-                          dropDownStringItem,
-                          style: const TextStyle(color: Colors.grey),
-                        ));
-                  }).toList(),
-                  onChanged: (String? newValueSelected) {
-                    setState(() {
-                      selectedCarType = newValueSelected;
-                    });
-                  },
-                  value: selectedCarType,
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: DropdownButton(
+                    dropdownColor: Colors.black54,
+                    iconEnabledColor: Colors.grey,
+                    hint: const Text('Select Car Type'),
+                    items: carTypeList.map((String dropDownStringItem) {
+                      return DropdownMenuItem(
+                          value: dropDownStringItem,
+                          child: Text(
+                            dropDownStringItem,
+                            style: const TextStyle(color: Colors.grey),
+                          ));
+                    }).toList(),
+                    onChanged: (String? newValueSelected) {
+                      setState(() {
+                        selectedCarType = newValueSelected;
+                      });
+                    },
+                    value: selectedCarType,
+                  ),
                 ),
                 const SizedBox(
                   height: 20,
                 ),
                 ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const CarInfoScreen()));
-                    },
+                    onPressed: () {},
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.lightGreenAccent),
+                      backgroundColor: Colors.lightGreenAccent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
                     child: const Text(
                       'Save Now',
                       style: TextStyle(color: Colors.black, fontSize: 18),

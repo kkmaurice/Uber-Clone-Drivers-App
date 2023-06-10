@@ -112,7 +112,11 @@ class _SignupScreenState extends State<SignupScreen> {
                         builder: (context) => const CarInfoScreen()));
                   },
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.lightGreenAccent),
+                    backgroundColor: Colors.lightGreenAccent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ), 
+                  ),
                   child: const Text(
                     'Create Account',
                     style: TextStyle(color: Colors.black, fontSize: 18),

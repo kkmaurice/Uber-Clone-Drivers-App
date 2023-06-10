@@ -4,6 +4,8 @@ import 'package:drivers_app/authentication/signup_screen.dart';
 import 'package:drivers_app/mainScreens/main_screen.dart';
 import 'package:flutter/material.dart';
 
+import '../authentication/login_screen.dart';
+
 class MySplashScreen extends StatefulWidget {
   const MySplashScreen({super.key});
 
@@ -16,7 +18,7 @@ class _MySplashScreenState extends State<MySplashScreen> {
     Timer(const Duration(seconds: 5), () {
       // send user to home screen
       Navigator.push(context,
-          MaterialPageRoute(builder: (context) => const SignupScreen()));
+          MaterialPageRoute(builder: (context) => const LoginScreen()));
     });
   }
 
