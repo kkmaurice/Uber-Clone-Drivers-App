@@ -1,6 +1,8 @@
+import 'package:drivers_app/global/global.dart';
+import 'package:drivers_app/splashScreen/splash_screen.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class CarInfoScreen extends StatefulWidget {
   const CarInfoScreen({super.key});
@@ -17,6 +19,18 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
 
   List<String> carTypeList = ['uber-x', 'uber-go', 'bike'];
   String? selectedCarType;
+
+  saveCarInfo() {
+    Map carInfo = {
+      'car_model': carModelTextEditingController.text.trim(),
+      'car_color': carColorTextEditingController.text.trim(),
+      'car_number': carNumberTextEditingController.text.trim(),
+      'car_type': selectedCarType,
+    };
+    DatabaseReference ref = FirebaseDatabase.instance.ref().child('drivers');
+    ref.child(currentFirebaseUser!.uid).child('car_details').set(carInfo);
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -97,7 +111,8 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
                   child: DropdownButton(
                     dropdownColor: Colors.black54,
                     iconEnabledColor: Colors.grey,
-                    hint: const Text('Select Car Type'),
+                    hint: const Text('Select Car Type',
+                        style: TextStyle(color: Colors.white)),
                     items: carTypeList.map((String dropDownStringItem) {
                       return DropdownMenuItem(
                           value: dropDownStringItem,
@@ -118,7 +133,35 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
                   height: 20,
                 ),
                 ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      if (carColorTextEditingController.text.isNotEmpty &&
+                          carModelTextEditingController.text.isNotEmpty &&
+                          carNumberTextEditingController.text.isNotEmpty &&
+                          selectedCarType != null) {
+                        saveCarInfo();
+
+                        Fluttertoast.showToast(
+                            msg: 'Information Saved Successfully',
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.lightGreenAccent,
+                            textColor: Colors.black,
+                            fontSize: 16.0);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const MySplashScreen()));
+                      } else {
+                        const snackBar = SnackBar(
+                          content: Text(
+                            'Please fill all the details',
+                            textAlign: TextAlign.center,
+                          ),
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      }
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.lightGreenAccent,
                       shape: RoundedRectangleBorder(

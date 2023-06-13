@@ -1,6 +1,16 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:math';
+
+import 'package:drivers_app/authentication/car_info_screen.dart';
 import 'package:drivers_app/widgets/progress_dialog.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
+import '../global/global.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -37,11 +47,54 @@ class _SignupScreenState extends State<SignupScreen> {
           backgroundColor: Colors.white,
           textColor: Colors.black);
     } else {
-      showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) =>
-              ProgressDialog(message: 'Registering, Please wait...'));
+      saveDriverInfo();
+    }
+  }
+
+  saveDriverInfo() async {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) =>
+            ProgressDialog(message: 'Registering, Please wait...'));
+
+    final User? firebaseUser = (await auth
+            .createUserWithEmailAndPassword(
+                email: emailTextEditingController.text.trim(),
+                password: passwordTextEditingController.text.trim())
+            .catchError((dynamic err) {
+      Navigator.pop(context);
+      Fluttertoast.showToast(
+          msg: 'Error: $err',
+          backgroundColor: Colors.white,
+          textColor: Colors.black);
+    }))
+        .user;
+
+    if (firebaseUser != null) {
+      Map driverInfo = {
+        'id': firebaseUser.uid,
+        'email': emailTextEditingController.text.trim(),
+        'name': nameTextEditingController.text.trim(),
+        'phone': phoneTextEditingController.text.trim(),
+      };
+
+      DatabaseReference ref = FirebaseDatabase.instance.ref().child('drivers');
+      ref.child(firebaseUser.uid).set(driverInfo);
+      // ASSIGNS THE CURRENT USER TO THE GLOBAL VARIABLE
+      currentFirebaseUser = firebaseUser;
+      Fluttertoast.showToast(
+          msg: 'Congratulations, your account has been created successfully',
+          backgroundColor: Colors.green,
+          textColor: Colors.black);
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => const CarInfoScreen()));
+    } else {
+      Navigator.pop(context);
+      Fluttertoast.showToast(
+          msg: 'New user account has not been created',
+          backgroundColor: Colors.white,
+          textColor: Colors.black);
     }
   }
 
