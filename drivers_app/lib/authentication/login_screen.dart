@@ -1,9 +1,9 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, unnecessary_null_comparison
 
 import 'package:drivers_app/authentication/signup_screen.dart';
-import 'package:drivers_app/mainScreens/main_screen.dart';
 import 'package:drivers_app/splashScreen/splash_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -42,23 +42,41 @@ class _LoginScreenState extends State<LoginScreen> {
         barrierDismissible: false,
         builder: (BuildContext context) =>
             ProgressDialog(message: 'Logging In, Please wait...'));
-    final UserCredential userCredential = await auth.signInWithEmailAndPassword(
-        email: emailController.text, password: passwordController.text).catchError((error) {
-          Navigator.pop(context);
-          Fluttertoast.showToast(
+    final UserCredential userCredential = await auth
+        .signInWithEmailAndPassword(
+            email: emailController.text, password: passwordController.text)
+        .catchError((error) {
+      Navigator.pop(context);
+      Fluttertoast.showToast(
           msg: error.toString(),
           backgroundColor: Colors.white,
           textColor: Colors.black);
-        });
-        
+    });
 
     if (userCredential != null) {
-      currentFirebaseUser = userCredential.user;
-      Fluttertoast.showToast(
-          msg: 'Logged in successfully',
-          backgroundColor: Colors.white,
-          textColor: Colors.green);
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const MySplashScreen()));
+      // VALIDATE LOGIN DRIVER. IF IT'S THE THE DRIVER TRYING TO LOGIN, THEN LOGIN ELSE LOGOUT
+      DatabaseReference driversRef =
+          FirebaseDatabase.instance.ref().child('drivers');
+      driversRef.child(userCredential.user!.uid).once().then((driverKey) {
+        final snap = driverKey.snapshot;
+        if (snap.value != null) {
+          currentFirebaseUser = userCredential.user;
+          Fluttertoast.showToast(
+              msg: 'Logged in successfully',
+              backgroundColor: Colors.white,
+              textColor: Colors.green);
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const MySplashScreen()));
+        } else {
+          Navigator.pop(context);
+          Fluttertoast.showToast(
+              msg: 'No record exists for this user. Please create new account',
+              backgroundColor: Colors.white,
+              textColor: Colors.black);
+          
+          
+        }
+      });
     }
   }
 
